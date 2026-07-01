@@ -8,8 +8,11 @@ type Props = {
 export default function WoundSelector({ value, onChange }: Props) {
   return (
     <div>
-      <h3 className="font-semibold mb-2">Wound Grade (W)</h3>
+      <label htmlFor="wound-grade" className="font-semibold mb-2 block">
+        Wound Grade (W)
+      </label>
       <select
+        id="wound-grade"
         className="border p-2 rounded w-full"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}

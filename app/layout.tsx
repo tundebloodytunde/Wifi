@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "WIfI Calculator",
   description: "Simple WIfI clinical calculator",

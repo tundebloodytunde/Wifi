@@ -8,8 +8,11 @@ type Props = {
 export default function InfectionSelector({ value, onChange }: Props) {
   return (
     <div>
-      <h3 className="font-semibold mb-2">Foot Infection (fI)</h3>
+      <label htmlFor="infection-grade" className="font-semibold mb-2 block">
+        Foot Infection (fI)
+      </label>
       <select
+        id="infection-grade"
         className="border p-2 rounded w-full"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
