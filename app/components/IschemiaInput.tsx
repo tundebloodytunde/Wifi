@@ -1,68 +1,72 @@
 "use client";
 
 import { useState } from "react";
+import { ischemiaFromPerfusion } from "../../lib/wificalc";
 
-type Props = {
-  onGradeChange: (grade: number | null) => void;
+type Method = "abi" | "ankle" | "toe" | "tcpo2";
+
+const METHOD_LIMITS: Record<Method, { min: number; max: number; label: string }> = {
+  abi: { min: 0, max: 1.4, label: "ABI" },
+  ankle: { min: 0, max: 300, label: "Ankle Pressure (mmHg)" },
+  toe: { min: 0, max: 200, label: "Toe Pressure (mmHg)" },
+  tcpo2: { min: 0, max: 100, label: "TcPO₂ (mmHg)" },
 };
 
-export default function IschemiaInput({ onGradeChange }: Props) {
-  const [method, setMethod] = useState<string>("abi");
+export default function IschemiaInput({
+  onGradeChange,
+}: {
+  onGradeChange: (grade: number | null) => void;
+}) {
+  const [method, setMethod] = useState<Method>("abi");
   const [value, setValue] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+  const limits = METHOD_LIMITS[method];
 
   const handleChange = (val: string) => {
     setValue(val);
-    const num = val ? Number(val) : null;
 
-    if (num === null) {
+    if (!val) {
+      setError(null);
       onGradeChange(null);
       return;
     }
 
-    // Temporary mapping — real mapping is in wificalc.ts
-    let grade = null;
+    const num = Number(val);
 
-    if (method === "toe") {
-      if (num > 60) grade = 0;
-      else if (num > 40) grade = 1;
-      else if (num > 30) grade = 2;
-      else grade = 3;
+    if (Number.isNaN(num) || num < limits.min || num > limits.max) {
+      setError(`Enter a value between ${limits.min} and ${limits.max}`);
+      onGradeChange(null);
+      return;
     }
 
-    if (method === "ankle") {
-      if (num > 100) grade = 0;
-      else if (num > 70) grade = 1;
-      else if (num > 50) grade = 2;
-      else grade = 3;
-    }
+    setError(null);
 
-    if (method === "abi") {
-      if (num > 0.8) grade = 0;
-      else if (num > 0.6) grade = 1;
-      else if (num > 0.4) grade = 2;
-      else grade = 3;
-    }
+    const params = {
+      abi: null as number | null,
+      ankle: null as number | null,
+      toe: null as number | null,
+      tcpo2: null as number | null,
+    };
+    params[method] = num;
 
-    if (method === "tcpo2") {
-      if (num > 60) grade = 0;
-      else if (num > 40) grade = 1;
-      else if (num > 30) grade = 2;
-      else grade = 3;
-    }
-
-    onGradeChange(grade);
+    onGradeChange(ischemiaFromPerfusion(params));
   };
 
   return (
     <div>
-      <h3 className="font-semibold mb-2">Ischemia (I)</h3>
+      <label htmlFor="ischemia-method" className="font-semibold mb-2 block text-slate-700">
+        Ischemia (I)
+      </label>
 
       <select
-        className="border p-2 rounded w-full mb-2"
+        id="ischemia-method"
+        className="border border-slate-300 p-2 rounded-lg w-full bg-white mb-2 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400"
         value={method}
         onChange={(e) => {
-          setMethod(e.target.value);
+          setMethod(e.target.value as Method);
           setValue("");
+          setError(null);
           onGradeChange(null);
         }}
       >
@@ -72,13 +76,31 @@ export default function IschemiaInput({ onGradeChange }: Props) {
         <option value="tcpo2">TcPO₂</option>
       </select>
 
+      <label htmlFor="ischemia-value" className="sr-only">
+        {limits.label}
+      </label>
       <input
+        id="ischemia-value"
         type="number"
-        className="border p-2 rounded w-full"
-        placeholder="Enter value"
+        min={limits.min}
+        max={limits.max}
+        step="any"
+        className={`border p-2 rounded-lg w-full bg-white focus:outline-none focus:ring-2 ${
+          error
+            ? "border-red-400 focus:ring-red-300 focus:border-red-400"
+            : "border-slate-300 focus:ring-sky-400 focus:border-sky-400"
+        }`}
+        placeholder={`Enter ${limits.label}`}
         value={value}
         onChange={(e) => handleChange(e.target.value)}
+        aria-invalid={error !== null}
+        aria-describedby={error ? "ischemia-error" : undefined}
       />
+      {error && (
+        <p id="ischemia-error" className="text-sm text-red-600 mt-1">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
