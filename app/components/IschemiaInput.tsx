@@ -55,13 +55,13 @@ export default function IschemiaInput({
 
   return (
     <div>
-      <label htmlFor="ischemia-method" className="font-semibold mb-2 block">
+      <label htmlFor="ischemia-method" className="font-semibold mb-2 block text-slate-700">
         Ischemia (I)
       </label>
 
       <select
         id="ischemia-method"
-        className="border p-2 rounded w-full mb-2"
+        className="border border-slate-300 p-2 rounded-lg w-full bg-white mb-2 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400"
         value={method}
         onChange={(e) => {
           setMethod(e.target.value as Method);
@@ -85,7 +85,11 @@ export default function IschemiaInput({
         min={limits.min}
         max={limits.max}
         step="any"
-        className="border p-2 rounded w-full"
+        className={`border p-2 rounded-lg w-full bg-white focus:outline-none focus:ring-2 ${
+          error
+            ? "border-red-400 focus:ring-red-300 focus:border-red-400"
+            : "border-slate-300 focus:ring-sky-400 focus:border-sky-400"
+        }`}
         placeholder={`Enter ${limits.label}`}
         value={value}
         onChange={(e) => handleChange(e.target.value)}
