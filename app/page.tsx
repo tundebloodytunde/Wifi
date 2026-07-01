@@ -5,6 +5,7 @@ import WoundSelector from "./components/WoundSelector";
 import InfectionSelector from "./components/InfectionSelector";
 import IschemiaInput from "./components/IschemiaInput";
 import ResultPanel from "./components/ResultPanel";
+import RecommendationsPanel from "./components/RecommendationsPanel";
 import { computeWIfIStage, riskFromStage } from "../lib/wificalc";
 
 export default function Page() {
@@ -42,6 +43,15 @@ export default function Page() {
           stage={stage}
           risk={risk}
         />
+
+        {stage !== null && ischemia !== null && (
+          <RecommendationsPanel
+            wound={wound}
+            ischemia={ischemia}
+            infection={infection}
+            stage={stage}
+          />
+        )}
       </div>
     </main>
   );

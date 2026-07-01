@@ -54,3 +54,55 @@ export function riskFromStage(stage: number): string {
   if (stage === 3) return "High risk";
   return "Very high risk";
 }
+
+export function revascularizationGuidance(ischemia: number): string {
+  if (ischemia === 0) {
+    return "Perfusion appears adequate — revascularization is unlikely to be needed for healing.";
+  }
+  if (ischemia === 1) {
+    return "Mild ischemia — vascular evaluation is reasonable, especially for larger or non-healing wounds.";
+  }
+  if (ischemia === 2) {
+    return "Moderate ischemia — revascularization is likely to improve healing potential; refer for vascular evaluation.";
+  }
+  return "Severe ischemia — revascularization is usually required for limb salvage; refer urgently to vascular surgery.";
+}
+
+export function infectionGuidance(infection: number): string {
+  if (infection === 0) {
+    return "No signs of infection — continue routine wound care.";
+  }
+  if (infection === 1) {
+    return "Mild infection — outpatient oral antibiotics with close monitoring.";
+  }
+  if (infection === 2) {
+    return "Moderate infection — consider surgical debridement, wound cultures, and antibiotics; hospitalization may be warranted.";
+  }
+  return "Severe infection — emergent surgical debridement/drainage, hospitalization, and evaluation for sepsis.";
+}
+
+export function woundGuidance(wound: number): string {
+  if (wound === 0) {
+    return "No open wound — focus on prevention, offloading, and routine foot checks.";
+  }
+  if (wound === 1) {
+    return "Small/shallow wound — standard local wound care, offloading, and monitoring.";
+  }
+  if (wound === 2) {
+    return "Deeper wound — consider surgical debridement and multidisciplinary wound care.";
+  }
+  return "Extensive tissue loss/gangrene — surgical debridement or partial amputation is often part of limb salvage.";
+}
+
+export function overallGuidance(stage: number): string {
+  if (stage === 1) {
+    return "Routine surveillance and risk-factor optimization; conservative management is typically appropriate.";
+  }
+  if (stage === 2) {
+    return "Outpatient vascular and wound care referral recommended, with close follow-up.";
+  }
+  if (stage === 3) {
+    return "Timely referral to a vascular specialist / limb preservation team for revascularization and wound management.";
+  }
+  return "Urgent multidisciplinary evaluation (vascular surgery, infectious disease, podiatry). Revascularization and aggressive infection control are priorities — amputation risk is high without prompt intervention.";
+}
